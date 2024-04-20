@@ -1,4 +1,5 @@
 #include <iostream>
+#include <tuple>
 #include <utility>
 #include <vector>
 #include <string>
@@ -7,6 +8,7 @@
 using std::cin;
 using std::cout;
 using std::endl;
+using std::get;
 using std::pair;
 using std::tuple;
 using std::vector;
@@ -105,21 +107,13 @@ bool DFSwithRemovedRoads(const vector<vector<int>> &adjList, vector<tuple<int, i
     return result;
 }
 
-int main()
+void makeGraph(std::vector<std::vector<int>> &adjList, std::vector<std::tuple<int, int, int>> &roads)
 {
-
-    // Number of nodes
-    int N = 5;
     int start_id = 0;
 
-    // adjacency list
-    std::vector<std::vector<int>> adjList(N);
-
-    // id, from, to
-    vector<tuple<int, int, int>> roads;
-
-    adjList[0].push_back(1);
     adjList[1].push_back(0);
+    adjList[0].push_back(1);
+    // roads.push_back(std::make_tuple(start_id++, 0, 1));
     roads.push_back(tuple<int, int, int>{start_id++, 0, 1});
 
     adjList[0].push_back(1);
@@ -141,8 +135,11 @@ int main()
     adjList[3].push_back(4);
     adjList[4].push_back(3);
     roads.push_back(tuple<int, int, int>{start_id++, 3, 4});
+}
 
-    for (int i = 0; i < N; i++)
+void viewGraph(const std::vector<std::vector<int>> &adjList, const std::vector<std::tuple<int, int, int>> &roads)
+{
+    for (int i = 0; i < adjList.size(); i++)
     {
         std::cout << "Node " << i << ": ";
         for (int j = 0; j < adjList[i].size(); j++)
@@ -157,10 +154,10 @@ int main()
         std::cout << endl
                   << "Road " << std::get<0>(roads[i]) << ": " << std::get<1>(roads[i]) << " -> " << std::get<2>(roads[i]) << std::endl;
     }
+}
 
-    // Generate all combinations of 3 elements
-    vector<int> fromElements = range(0, N + 1);
-    vector<vector<int>> comb_result = combinations(fromElements, 3);
+void viewCombinations(const std::vector<std::vector<int>> &comb_result)
+{
     for (size_t i = 0; i < comb_result.size(); i++)
     {
         for (size_t j = 0; j < comb_result[i].size(); j++)
@@ -169,6 +166,29 @@ int main()
         }
         std::cout << std::endl;
     }
+}
+
+int main()
+{
+
+    // Number of nodes
+    int N = 5;
+    // int start_id = 0;
+
+    // adjacency list
+    std::vector<std::vector<int>> adjList(N);
+    // id, from, to
+    vector<tuple<int, int, int>> roads;
+
+    makeGraph(adjList, roads);
+
+    viewGraph(adjList, roads);
+
+    // Generate all combinations (3 elements from 0 to N)
+    vector<int> fromElements = range(0, N + 1);
+    vector<vector<int>> comb_result = combinations(fromElements, 3);
+
+    viewCombinations(comb_result);
 
     cout << DFSwithRemovedRoads(adjList, roads, comb_result, 0, 4) << endl;
 }
